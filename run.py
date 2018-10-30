@@ -12,8 +12,8 @@ except ImportError:  # For python 2
 ACTIONS = ["move", "eat", "load", "unload"]
 DIRECTIONS = ["up", "down", "right", "left"]
 MOVEID = {
-    (-1, 0): 0,
-    (1, 0): 1,
+    (-1, 0): 1,
+    (1, 0): 2,
     (0, 1): 2,
     (0, -1): 3    
 }
