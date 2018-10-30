@@ -26,12 +26,12 @@ def parseJSON(json):
 def getDist(x, y, xx, yy):
     return abs(x - xx) + abs(y - yy)
  
-def findNearestFood(mapa, x, y):
+def findNearestItem(mapa, x, y, item):
     res = math.inf
     px, py = 0, 0
     for i, line in enumerate(mapa):
         for j, e in enumerate(line):
-            if "food" in e:
+            if item in e:
                 res = min(res, getDist(x, y, i, j))
                 px, py = i, j
     return px, py, res
@@ -49,6 +49,16 @@ def getDirTo(x, y, xx, yy):
     return rx, ry
 
 
+def chooseAction(mapa, ant, x, y):
+    if ("food" in mapa[x][y]):
+        return "load"
+    elif ("hive" in mapa[x][y]):
+        return "unload"
+    elif (ant["health"] == 1):
+        return "eat"
+    else:
+        return "move"
+
 class Handler(BaseHTTPRequestHandler):
     def _set_headers(self):
         self.send_response(200)
@@ -64,11 +74,16 @@ class Handler(BaseHTTPRequestHandler):
         height, width, mapa, hiveId, ants = parseJSON(hive)
         orders = {}
         for ant in ants:
-            x, y, d = findNearestFood(mapa, ant["x"], ant["y"])
+            x, y, d = 0,0,0
+            if (ant["payload"] == 0):
+                x, y, d = findNearestItem(mapa, ant["x"], ant["y"], "food")
+            else:
+                x, y, d = findNearestItem(mapa, ant["x"], ant["y"], "hive")
             dx, dy = getDirTo(ant["x"], ant["y"], x, y)
+
             orders[ant] = {
                 "dir": ACTIONS[MOVEID[(dx, dy)]],
-                "act": DIRECTIONS[random.randint(0, 3)]
+                "act": chooseAction(mapa, ant, x + dx, y + dy)
             }
 
         # Loop through ants and give orders
