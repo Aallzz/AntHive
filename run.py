@@ -79,20 +79,13 @@ class Handler(BaseHTTPRequestHandler):
                 x, y, d = findNearestItem(mapa, ant["x"], ant["y"], "food")
             else:
                 x, y, d = findNearestItem(mapa, ant["x"], ant["y"], "hive")
-            dx, dy = getDirTo(ant["x"], ant["y"], x, y)
+            dy, dx = getDirTo(ant["x"], ant["y"], x, y)
 
             orders[ant] = {
                 "dir": ACTIONS[MOVEID[(dx, dy)]],
                 "act": chooseAction(mapa, ant, x + dx, y + dy)
             }
 
-        # Loop through ants and give orders
-        # orders = {}
-        # for ant in hive['ants']:
-        #     orders[ant] = {
-        #         "act": ACTIONS[random.randint(0, 3)],
-        #         "dir": DIRECTIONS[random.randint(0, 3)]
-        #     }
         response = json.dumps(orders)
         print(response)
 
@@ -103,8 +96,6 @@ class Handler(BaseHTTPRequestHandler):
 
         self.wfile.write(out)
 
-        # json format sample:
-        # {"1":{"act":"load","dir":"down"},"17":{"act":"load","dir":"up"}}
         return
 
 
