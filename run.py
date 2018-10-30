@@ -2,7 +2,7 @@
 
 import json
 import random
-import Math
+import math
 
 try:  # For python 3
     from http.server import BaseHTTPRequestHandler, HTTPServer
@@ -27,7 +27,7 @@ def getDist(x, y, xx, yy):
     return abs(x - xx) + abs(y - yy)
  
 def findNearestFood(mapa, x, y):
-    res = Math.inf
+    res = math.inf
     px, py = 0, 0
     for i, line in enumerate(mapa):
         for j, e in enumerate(line):
@@ -37,7 +37,7 @@ def findNearestFood(mapa, x, y):
     return px, py, res
    
 def getDirTo(x, y, xx, yy):
-    d = Math.inf
+    d = math.inf
     rx, ry = 0, 0
     for dx in (-1, 0, 1):
         for dy in (-1, 0, 1):
@@ -62,6 +62,7 @@ class Handler(BaseHTTPRequestHandler):
         # Hive object from request payload
         hive = json.loads(payload)
         height, width, mapa, hiveId, ants = parseJSON(hive)
+        orders = {}
         for ant in ants:
             x, y, d = findNearestFood(mapa, ant["x"], ant["y"])
             dx, dy = getDirTo(ant["x"], ant["y"], x, y)
