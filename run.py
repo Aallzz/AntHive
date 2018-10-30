@@ -32,8 +32,8 @@ def findNearestItem(mapa, x, y, item):
     for i, line in enumerate(mapa):
         for j, e in enumerate(line):
             if item in e:
-                res = min(res, getDist(x, y, i, j))
-                px, py = i, j
+                res = min(res, getDist(x, y, j, i))
+                px, py = j, i
     return px, py, res
    
 def getDirTo(x, y, xx, yy):
