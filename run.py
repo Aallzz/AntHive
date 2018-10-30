@@ -41,7 +41,7 @@ def getDirTo(x, y, xx, yy):
     rx, ry = 0, 0
     for dx in (-1, 0, 1):
         for dy in (-1, 0, 1):
-            if dx + dy != 1:
+            if abs(dx) + abs(dy) != 1:
                 continue
             curD = getDist(x + dx, y + dy, xx, yy)
             if (curD < d):
