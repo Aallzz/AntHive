@@ -18,6 +18,7 @@ MOVEID = {
     (0, -1): 3    
 }
 
+temp_map = {}
 
 def parseJSON(json):
     return json["map"]["height"], json["map"]["width"], reversed(json["cells"]), json["id"], json["ants"]
@@ -25,22 +26,19 @@ def parseJSON(json):
 
 def getDist(x, y, xx, yy):
     return abs(x - xx) + abs(y - yy)
- 
+
 def findNearestItem(mapa, x, y, item):
     res = math.inf
-    lst = []
     px, py = 0, 0
     for yy, line in enumerate(mapa):
         for xx, e in enumerate(line):
             if item in e and len(e) == 1:
+                if ((xx, yy) in temp_map):
+                    continue
                 curD = getDist(x, y, xx, yy)
-                if (curD <= res):
+                if (curD < res):
                     px, py, res = xx, yy, curD
-                    lst.append((curD, xx, yy))
-    lst.sort(key = lambda tup: tup[0])
-    c = random.randint(0, lst / 3 + 1)
-    px = lst[c][1]
-    py = lst[c][2]
+    temp_map[(px, py)] = 1
     return px, py, res
    
 def getDirTo(mapa, x, y, xx, yy):
@@ -94,6 +92,7 @@ class Handler(BaseHTTPRequestHandler):
                 "dir": ACTIONS[MOVEID[(dx, dy)]],
                 "act": naiveChooseAction(mapa, ant, x + dx, y + dy)
             }
+        temp_map.clear()
 
         response = json.dumps(orders)
         print(response)
