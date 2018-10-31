@@ -31,18 +31,20 @@ def findNearestItem(mapa, x, y, item):
     px, py = 0, 0
     for yy, line in enumerate(mapa):
         for xx, e in enumerate(line):
-            if item in e:
+            if item in e and len(e) == 1:
                 curD = getDist(x, y, xx, yy)
                 if (curD < res):
                     px, py, res = xx, yy, curD
     return px, py, res
    
-def getDirTo(x, y, xx, yy):
+def getDirTo(mapa, x, y, xx, yy):
     d = math.inf
-    rx, ry = 0, 0
+    rx, ry = 1, 0
     for dx in (-1, 0, 1):
         for dy in (-1, 0, 1):
             if abs(dx) + abs(dy) != 1:
+                continue
+            if ("ant" in mapa[y][x]):
                 continue
             curD = getDist(x + dx, y + dy, xx, yy)
             if (curD < d):
@@ -80,7 +82,7 @@ class Handler(BaseHTTPRequestHandler):
                 x, y, d = findNearestItem(mapa, ant["x"], ant["y"], "food")
             else:
                 x, y, d = findNearestItem(mapa, ant["x"], ant["y"], "hive")
-            dy, dx = getDirTo(ant["x"], ant["y"], x, y)
+            dy, dx = getDirTo(mapa, ant["x"], ant["y"], x, y)
 
             orders[ant] = {
                 "dir": ACTIONS[MOVEID[(dx, dy)]],
