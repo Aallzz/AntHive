@@ -32,8 +32,9 @@ def findNearestItem(mapa, x, y, item):
     for yy, line in enumerate(mapa):
         for xx, e in enumerate(line):
             if item in e:
-                res = min(res, getDist(x, y, xx, yy))
-                px, py = xx, yy
+                curD = getDist(x, y, xx, yy)
+                if (curD < res):
+                    px, py, res = xx, yy, curD
     return px, py, res
    
 def getDirTo(x, y, xx, yy):
@@ -49,7 +50,7 @@ def getDirTo(x, y, xx, yy):
     return rx, ry
 
 
-def chooseAction(mapa, ant, x, y):
+def naiveChooseAction(mapa, ant, x, y):
     if ("food" in mapa[y][x]):
         return "load"
     elif ("hive" in mapa[y][x]):
@@ -83,7 +84,7 @@ class Handler(BaseHTTPRequestHandler):
 
             orders[ant] = {
                 "dir": ACTIONS[MOVEID[(dx, dy)]],
-                "act": chooseAction(mapa, ant, x + dx, y + dy)
+                "act": naiveChooseAction(mapa, ant, x + dx, y + dy)
             }
 
         response = json.dumps(orders)
