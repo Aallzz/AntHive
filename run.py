@@ -28,13 +28,19 @@ def getDist(x, y, xx, yy):
  
 def findNearestItem(mapa, x, y, item):
     res = math.inf
+    lst = []
     px, py = 0, 0
     for yy, line in enumerate(mapa):
         for xx, e in enumerate(line):
             if item in e and len(e) == 1:
                 curD = getDist(x, y, xx, yy)
-                if (curD < res):
+                if (curD <= res):
                     px, py, res = xx, yy, curD
+                    lst.append((curD, xx, yy))
+    lst.sort(key = lambda tup: tup[0])
+    c = random.randint(0, lst / 3 + 1)
+    px = lst[c][1]
+    py = lst[c][2]
     return px, py, res
    
 def getDirTo(mapa, x, y, xx, yy):
