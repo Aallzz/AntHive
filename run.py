@@ -12,15 +12,15 @@ except ImportError:  # For python 2
 ACTIONS = ["move", "eat", "load", "unload"]
 DIRECTIONS = ["up", "down", "right", "left"]
 MOVEID = {
-    (-1, 0): 1,
-    (1, 0): 0,
+    (-1, 0): 0,
+    (1, 0): 1,
     (0, 1): 2,
     (0, -1): 3    
 }
 
 
 def parseJSON(json):
-    return json["map"]["height"], json["map"]["width"], json["cells"], json["id"], json["ants"]
+    return json["map"]["height"], json["map"]["width"], reversed(json["cells"]), json["id"], json["ants"]
 
 
 def getDist(x, y, xx, yy):
@@ -29,11 +29,11 @@ def getDist(x, y, xx, yy):
 def findNearestItem(mapa, x, y, item):
     res = math.inf
     px, py = 0, 0
-    for i, line in enumerate(mapa):
-        for j, e in enumerate(line):
+    for yy, line in enumerate(mapa):
+        for xx, e in enumerate(line):
             if item in e:
-                res = min(res, getDist(x, y, j, i))
-                px, py = j, i
+                res = min(res, getDist(x, y, xx, yy))
+                px, py = xx, yy
     return px, py, res
    
 def getDirTo(x, y, xx, yy):
@@ -50,9 +50,9 @@ def getDirTo(x, y, xx, yy):
 
 
 def chooseAction(mapa, ant, x, y):
-    if ("food" in mapa[x][y]):
+    if ("food" in mapa[y][x]):
         return "load"
-    elif ("hive" in mapa[x][y]):
+    elif ("hive" in mapa[y][x]):
         return "unload"
     elif (ant["health"] == 1):
         return "eat"
